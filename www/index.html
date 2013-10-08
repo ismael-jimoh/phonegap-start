@@ -1,42 +1,308 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
+  <head>
+    <title>Capture Image</title>
+
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+	document.addEventListener("deviceready", onDeviceReady, false);
+	document.addEventListener("pause", onPause, false);
+	document.addEventListener("resume", onResume, false);
+    
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value 
+	var iabRef = null;
+
+    // PhoneGap is loaded and it is now safe to make calls PhoneGap methods
+    //
+    function onDeviceReady() {
+        // Now safe to use the PhoneGap API
+    	document.addEventListener("backbutton", onBackKeyDown, false);
+        alert("Device is ready. Trying to load page on external browser");
+        window.addEventListener("batterycritical", onBatteryCritical, false);   
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+        //navigator.app.loadUrl('http://www.google.com', { openExternal:true } );
+    }
+    function onBatteryCritical(info) {
+        alert("Battery Level Critical " + info.level + "%\nRecharge Soon!"); 
+    }
+    function onBackKeyDown(){
+        showConfirm();
+    }
+    function deviceInfo() 
+    { 
+         var element = document.getElementById('deviceProperties');
+         element.style.display="block";
+
+        element.innerHTML = 'Device Name: '     + device.name     + '<br />' + 
+                            'Device Cordova: '  + device.cordova + '<br />' + 
+                            'Device Platform: ' + device.platform + '<br />' + 
+                            'Device UUID: '     + device.uuid     + '<br />' + 
+                            'Device Model: '    + device.model     + '<br />' + 
+                            'Device Version: '  + device.version  + '<br />'+
+                            '<button onclick="hideDiv();">Close</button>';
+
+    }
+    function hideDiv()
+    {
+    	document.getElementById("deviceProperties").style.display="none";
+    }
+     function onConfirm(buttonIndex) {
+        //alert('You selected button ' + buttonIndex);
+        if(buttonIndex == 1){
+            navigator.app.exitApp();
+        }
+    }
+
+    function showConfirm() {
+        navigator.notification.confirm(
+            'Are you sure you want to exit!',  // message
+            onConfirm,              // callback to invoke with index of button pressed
+            'Exit App?',            // title
+            'Exit,Cancel'          // buttonLabels
+        );
+    }
+
+    function createContact(){
+        var myContact = navigator.contacts.create({"displayName": "Test User"});
+        myContact.note = "This contact has a note.";
+        console.log("The contact, " + myContact.displayName + ", note: " + myContact.note);
+
+    }
+
+
+    function onPhotoDataSuccess(imageData) {
+      var smallImage = document.getElementById('smallImage');
+      smallImage.style.display = 'block';
+      smallImage.src = "data:image/jpeg;base64," + imageData;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoURISuccess(imageURI) {
+     
+      var largeImage = document.getElementById('largeImage');
+      largeImage.style.display = 'block';
+      largeImage.src = imageURI;
+    }
+
+    function capturePhoto() {
+      // Take picture using device camera and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+        destinationType: destinationType.DATA_URL });
+    }
+
+
+    function getPhoto(source) {
+      // Retrieve image file location from specified source
+      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+        destinationType: destinationType.FILE_URI,
+        sourceType: source });
+    }
+
+    function onFail(message) {
+      alert('Failed because: ' + message);
+    }
+    function goToFacebook(){
+        var ref = window.open('http://facebook.com', '_blank', 'location=yes');
+        //ref.addEventListener('loadstart', function() { alert('start: ' + event.url); });
+        //ref.addEventListener('loadstop', function() { alert('stop: ' + event.url); });
+        ref.addEventListener('exit', function() { alert(event.type); });
+    }
+	
+	function onPause(){
+		setTimeout(function() {
+          // TODO: do your thing!
+		alert("Paused");
+        }, 0);
+	}
+	
+	function onResume(){
+		setTimeout(function() {
+          // TODO: do your thing!
+		alert("Resumed");
+        }, 0);
+	}
+	
+	//Read from a file
+	function readFile(){
+		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+	}
+	
+	function gotFS(fileSystem) {
+        alert("gotFS");
+        fileSystem.root.getFile("readme.txt", null, gotFileEntry, fail);
+    }
+
+    function gotFileEntry(fileEntry) {
+        fileEntry.file(gotFile, fail);
+    }
+
+    function gotFile(file){
+        alert("gotFile");
+        readDataUrl(file);
+        readAsText(file);
+    }
+
+    function readDataUrl(file) {
+        alert("readDataUrl");
+        var reader = new FileReader();
+        reader.onloadend = function(evt) {
+            console.log("Read as data URL");
+            console.log(evt.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function readAsText(file) {
+        alert("readAsText")
+        var reader = new FileReader();
+        reader.onloadend = function(evt) {
+            console.log("Read as text");
+            console.log(evt.target.result);
+            alert(evt.target.result);
+        };
+        reader.readAsText(file);
+    }
+
+    function fail(evt) {
+        console.log(evt.target.error.code);
+    }
+	
+	//Write to a file
+	function writeFile(){
+		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotWriteFS, fail);
+	}
+	
+	function gotWriteFS(fileSystem) {
+        alert("gotWriteFS")
+        fileSystem.root.getFile("readme.txt", {create: true, exclusive: false}, gotWriteFileEntry, fail);
+    }
+
+    function gotWriteFileEntry(fileEntry) {
+        alert("gotWriteFileEntry");
+        fileEntry.createWriter(gotFileWriter, fail);
+    }
+
+    function gotFileWriter(writer) {
+        alert("gotFileWriter")
+        writer.onwriteend = function(evt) {
+            console.log("contents of file now 'some sample text'");
+            writer.truncate(11);
+            writer.onwriteend = function(evt) {
+                console.log("contents of file now 'some sample'");
+                writer.seek(4);
+                writer.write(" different text. Testing Testing. Does it Actually write correctly? I have to test this fully. What do you all think.");
+                writer.onwriteend = function(evt){
+                    console.log("contents of file now 'some different text'");
+                    alert("contents of file now 'some different text'");
+                }
+            };
+        };
+        writer.write("some sample text");
+    }
+	
+	function uTubeVideo(){
+		iabRef = window.open('http://www.youtube.com/watch?v=jPsQ85HR1CU', '_blank', 'location=yes');
+        //iabRef.addEventListener('loadstart', iabLoadStart);
+        //iabRef.addEventListener('loadstop', iabLoadStop);
+        iabRef.removeEventListener('loaderror', iabLoadError);
+        iabRef.addEventListener('exit', iabClose);
+	}
+	
+	function iabLoadError(event) {
+        alert(event.type + ' - ' + event.message);
+    }
+
+    function iabClose(event) {
+         alert(event.type);
+         iabRef.removeEventListener('loadstart', iabLoadStart);
+         iabRef.removeEventListener('loadstop', iabLoadStop);
+         iabRef.removeEventListener('loaderror', iabLoadError);
+         iabRef.removeEventListener('exit', iabClose);
+    }
+	
+
+    </script>
+    <style type="text/css">
+    	#deviceProperties{
+    		width:80%;
+    		height: 200px;
+    		display: none;
+    		z-index: 4;
+    	}
+    </style>
     </head>
     <body>
-        <div class="app">
-            <h1>PhoneGap</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
+        <button onclick="deviceInfo();">Get Device Information</button> <br>
+        <button onclick="capturePhoto();">Test Device Camera</button><br>
+        <button onclick="createContact();">Create a Contact</button><br>
+        <button onclick="goToFacebook();">View my Facebook</button><br>
+		<button onclick="writeFile();">Write to File</button><br>
+		<button onclick="readFile();">Read From File</button><br>
+        <div id="deviceProperties">
+        	
         </div>
-        <script type="text/javascript" src="phonegap.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
+	<div>
+            	<video width="320" height="240" controls>
+ 			<source src="http://www.w3schools.com/html/movie.ogg" type="video/ogg">
+  			<source src="http://www.w3schools.com/html/movie.mp4" type="video/mp4">
+  			<source src="http://www.w3schools.com/html/movie.webm" type="video/webm">
+		</video>
+        </div>
+	<div>
+            	<video width="320" height="240" controls>
+ 			<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.ogg" type="video/ogg">
+  			<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" type="video/mp4">
+  			<source src="http://clips.vorwaerts-gmbh.de/VfE_html5.webm" type="video/webm">
+		</video>
+        </div>
+	<div>
+            	<video width="320" height="240" controls>
+ 			<source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg">
+  			<source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
+  			<source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm">
+		</video>
+        </div>
+	<div>
+        <video id="video1" width="320" height="240" controls>
+  			<source src="xfade.mp4">
+		</video>
+     </div>
+	 <div>
+        <video width="320" height="240" controls>
+  			<source src="xfade.mp4">
+		</video>
+     </div>
+	<div>
+        <video id="video2" width="320" height="240" controls>
+  			<source src="file:///assets/www/scroller.mp4">
+		</video>
+        </div>
+	<div>
+        <video id="video3" width="320" height="240" controls>
+  			<source src="file:///android_assets/www/followspot.mp4">
+		</video>
+    </div>
+	<div>
+		<!--<iframe width="640" height="360" src="//www.youtube.com/embed/jPsQ85HR1CU?feature=player_detailpage" frameborder="0" allowfullscreen></iframe>-->
+		<button onclick="uTubeVideo();">Play Youtube Video</button>
+	</div>
+	<script type="text/javascript">
+		var video = document.getElementById('video1');
+		video.addEventListener('click',function(){video.play()},false);
+		
+		var video2 = document.getElementById('video2');
+		video2.addEventListener('click',function(){video2.play()},error);
+		
+		var video3 = document.getElementById('video3');
+		video3.addEventListener('click',function(){video3.play()},false);
+		
+		function(evt){
+			alert("Seems an error occured "+evt.code);
+		}
+	</script>
     </body>
 </html>
