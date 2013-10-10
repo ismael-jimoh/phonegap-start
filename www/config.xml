@@ -19,7 +19,7 @@
     
 	<preference name="phonegap-version" value="3.0.0" />
 	
-    <feature name="http://api.phonegap.com/1.0/battery"/>
+    <!--<feature name="http://api.phonegap.com/1.0/battery"/>
 	<feature name="http://api.phonegap.com/1.0/camera"/>
 	<feature name="http://api.phonegap.com/1.0/contacts"/>
 	<feature name="http://api.phonegap.com/1.0/file"/>
@@ -27,7 +27,27 @@
 	<feature name="http://api.phonegap.com/1.0/media"/>
 	<feature name="http://api.phonegap.com/1.0/network"/>
 	<feature name="http://api.phonegap.com/1.0/notification"/>
-	<feature name="http://api.phonegap.com/1.0/device"/>
+	<feature name="http://api.phonegap.com/1.0/device"/>-->
+	
+	<gap:plugin name="org.apache.cordova.core.battery-status" />
+	<gap:plugin name="org.apache.cordova.core.camera" />
+	<gap:plugin name="org.apache.cordova.core.media-capture" />
+	<gap:plugin name="org.apache.cordova.core.console" />
+	<gap:plugin name="org.apache.cordova.core.contacts" />
+	<gap:plugin name="org.apache.cordova.core.device" />
+	<gap:plugin name="org.apache.cordova.core.device-motion" />
+	<gap:plugin name="org.apache.cordova.core.device-orientation" />
+	<gap:plugin name="org.apache.cordova.core.file" />
+	<gap:plugin name="org.apache.cordova.core.file-transfer" />
+	<gap:plugin name="org.apache.cordova.core.geolocation" />
+	<gap:plugin name="org.apache.cordova.core.globalization" />
+	<gap:plugin name="org.apache.cordova.core.inappbrowser" />
+	<gap:plugin name="com.phonegap.plugins.hydration" />
+	<gap:plugin name="org.apache.cordova.core.audiohandler" />
+	<gap:plugin name="org.apache.cordova.core.network-information" />
+	<gap:plugin name="org.apache.cordova.core.dialogs" />
+	<gap:plugin name="org.apache.cordova.core.splashscreen" />
+	<gap:plugin name="org.apache.cordova.core.vibration" />
 	
 	<gap:platform name="ios" />
 	<gap:platform name="android" />
