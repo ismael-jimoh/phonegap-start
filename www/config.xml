@@ -17,7 +17,7 @@
         Ismael Olusola Jimoh
     </author>
     
-	<preference name="phonegap-version" value="2.5.0" />
+	<preference name="phonegap-version" value="3.0.0" />
 	
     <feature name="http://api.phonegap.com/1.0/battery"/>
 	<feature name="http://api.phonegap.com/1.0/camera"/>
