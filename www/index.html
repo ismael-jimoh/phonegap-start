@@ -23,6 +23,7 @@
         window.addEventListener("batterycritical", onBatteryCritical, false);   
         pictureSource=navigator.camera.PictureSourceType;
         destinationType=navigator.camera.DestinationType;
+		setTimeout(function(){window.open("testpage.html");},3000);
         //navigator.app.loadUrl('http://www.google.com', { openExternal:true } );
     }
     function onBatteryCritical(info) {
