@@ -20,6 +20,8 @@
         // Now safe to use the PhoneGap API
     	document.addEventListener("backbutton", onBackKeyDown, false);
         alert("Device is ready. Trying to load page on external browser");
+		alert(device.platform);
+		alert(device.cordova);
         window.addEventListener("batterycritical", onBatteryCritical, false);   
         pictureSource=navigator.camera.PictureSourceType;
         destinationType=navigator.camera.DestinationType;
