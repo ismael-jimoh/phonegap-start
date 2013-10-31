@@ -225,6 +225,10 @@
          iabRef.removeEventListener('exit', iabClose);
     }
 	
+	function nextPage(){
+		window.open("captureAPI.html");
+	}
+	
 
     </script>
     <style type="text/css">
@@ -243,6 +247,7 @@
         <button onclick="goToFacebook();">View my Facebook</button><br>
 		<button onclick="writeFile();">Write to File</button><br>
 		<button onclick="readFile();">Read From File</button><br>
+		<button onclick="nextPage();">Open Capture API page</button><br>
         <div id="deviceProperties">
         	
         </div>
